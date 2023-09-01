@@ -1,5 +1,6 @@
 import re
 import sys
+import traecback
 
 from datetime import datetime
 
@@ -92,8 +93,8 @@ class Bot():
             self.update_timer()
             self.add_tp_banner(hooks)
             DYKLogger.log(f"DYK update finished.")
-        except Exception as e:
-            DYKLogger.log(f"{type(e).__name__}: {e}")
+        except Exception:
+            DYKLogger.log(f"{traceback.format_exc()}")
             sys.exit(1)
 def main():
     bot = Bot()

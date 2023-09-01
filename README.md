@@ -6,7 +6,7 @@ This bot performs some of the required tasks needed to update Simple English Wik
 * Update the next queue counter
 * Reset the DYK timer
 * Archive the previous DYK
-* Add the `{{dyktalk}}` template to talk pages of recently promoted articles. (TODO)
+* Add the `{{dyktalk}}` template to talk pages of recently promoted articles.
 
 ## Activating
 The bot checks for changes to User:[Bot's username]/DYKRun every hour. Replace the contents of this page with `1` to activate the bot. 
