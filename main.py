@@ -72,7 +72,7 @@ class Bot():
     def add_tp_banner(self, hooks):
         hook_array = re.findall("^:\{\{\*mp\}\}(.*)", hooks, flags=re.M)
         for hook in hook_array:
-            talk_page = pwb.Page(self.SITE, re.search("'''('')?\[\[(.*?)\]\](.*?)('')?'''", hook)[2], ns=1)
+            talk_page = pwb.Page(self.SITE, re.search("'''('')?\[\[(.*?)(|(.*?))?\]\](.*?)('')?'''", hook)[2], ns=1)
             talk_page.text = f"{{{{dyktalk|{self.CUR_DATEMONTH}|{self.CUR_YEAR}}}}}" + talk_page.text
             talk_page.save("[BOT] Adding {{dyktalk}} to DYK-featured article")
 
