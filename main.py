@@ -34,7 +34,7 @@ class Bot():
         nexq = pwb.Page(self.SITE, self.NEXQ_LOC)
         nexq_text = str(mwp.parse(nexq.text).filter_text()[0])
         self.CUR_QUEUE = nexq_int = int(nexq_text)
-        return pwb.Page(self.SITE, f"User:{self.SITE.username()}/TestQueue/{nexq_int}")
+        return pwb.Page(self.SITE, f"Template:Did you know/Queue/{nexq_int}")
     
     def update_next_queue(self):
         nexq = pwb.Page(self.SITE, self.NEXQ_LOC)
@@ -66,13 +66,13 @@ class Bot():
 
     def update_timer(self):
         timer = pwb.Page(self.SITE, self.TIMER_LOC)
-        timer.text = re.sub(r"</noinclude>((.|\n)*?)<noinclude>", "</noinclude>\n{{subst:#time:Y-m-d\\\TH:i:s\\\Z}}</noinclude>", timer.text)
+        timer.text = re.sub(r"</noinclude>((.|\n)*?)<noinclude>", "</noinclude>\n{{subst:#time:Y-m-d\\\TH:i:s\\\Z}}<noinclude>", timer.text)
         timer.save("[BOT] Updating DYK timer")
 
     def add_tp_banner(self, hooks):
-        hook_array = re.findall("^:\{\{\*mp\}\}(.*)", a, flags=re.M)
+        hook_array = re.findall("^:\{\{\*mp\}\}(.*)", hooks, flags=re.M)
         for hook in hook_array:
-            talk_page = pwd.Page(self.SITE, re.search("'''('')?\[\[(.*?)\]\](.*?)('')?'''", b)[2], ns=1)
+            talk_page = pwd.Page(self.SITE, re.search("'''('')?\[\[(.*?)\]\](.*?)('')?'''", hook)[2], ns=1)
             talk_page.text = f"{{{{dyktalk|{self.CUR_DATEMONTH}|{self.CUR_YEAR}}}}}" + talk_page.text
             talk_page.save("[BOT] Adding {{dyktalk}} to DYK-featured article")
 
