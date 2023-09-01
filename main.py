@@ -1,6 +1,8 @@
 import re
 import sys
 
+from datetime import datetime
+
 import mwparserfromhell as mwp
 import pywikibot as pwb
 
@@ -12,6 +14,8 @@ class Bot():
     CLEAR_LOC = f"User:{SITE.username()}/TestQueue/Clear"
     TIMER_LOC = f"User:{SITE.username()}/TestQueue/Time"
     ARCHIVE_LOC = f"User:{SITE.username()}/Archives"
+    CUR_DATEMONTH = "{now.day} {now:%B}".format(now=datetime.now())
+    CUR_YEAR = str(datetime.now().year)
     CUR_QUEUE = 0
     NUM_QUEUES = 7
 
@@ -60,6 +64,14 @@ class Bot():
     def update_timer(self):
         timer = pwb.Page(self.SITE, self.TIMER_LOC)
         timer.text = re.sub(r"</noinclude>((.|\n)*?)<noinclude>", "</noinclude>\n{{subst:#time:Y-m-d\\\TH:i:s\\\Z}}</noinclude>", timer.text)
+        timer.save("[BOT] Updating DYK timer")
+
+    def add_tp_banner(self, hooks):
+        hook_array = re.findall("^:\{\{\*mp\}\}(.*)", a, flags=re.M)
+        for hook in hook_array:
+            talk_page = pwd.Page(self.SITE, re.search("'''('')?\[\[(.*?)\]\](.*?)('')?'''", b)[2], ns=1)
+            talk_page.text = f"{{{{dyktalk|{self.CUR_DATEMONTH}|{self.CUR_YEAR}}}}}" + talk_page.text
+            talk_page.save("[BOT] Adding {{dyktalk}} to DYK-featured article")
 
     def run(self):
         if not self.check_activator():
@@ -76,6 +88,7 @@ class Bot():
         self.archive_dyk()
         self.update_dyk(hooks)
         self.update_timer()
+        self.add_tp_banner(hooks)
         
 def main():
     bot = Bot()
