@@ -11,11 +11,11 @@ from dyk_logger import DYKLogger
 class Bot():
     SITE = pwb.Site()
     ACTIVATOR_LOC = f"User:{SITE.username()}/DYKRun"
-    DYK_LOC = f"User:{SITE.username()}/TestDYK"
-    NEXQ_LOC = f"User:{SITE.username()}/TestQueue/NexQ"
-    CLEAR_LOC = f"User:{SITE.username()}/TestQueue/Clear"
-    TIMER_LOC = f"User:{SITE.username()}/TestQueue/Time"
-    ARCHIVE_LOC = f"User:{SITE.username()}/Archives"
+    DYK_LOC = f"Template:Did you know"
+    NEXQ_LOC = f"Template:Did you know/Queue/NexQ"
+    CLEAR_LOC = f"Template:Did you know/Queue/Clear"
+    TIMER_LOC = f"Template:Did you know/Queue/Time"
+    ARCHIVE_LOC = f"Template:Did you know/Archives"
     CUR_DATEMONTH = "{now.day} {now:%B}".format(now=datetime.now())
     CUR_YEAR = str(datetime.now().year)
     CUR_QUEUE = 0
@@ -82,7 +82,7 @@ class Bot():
                 return
             activator = pwb.Page(self.SITE, self.ACTIVATOR_LOC)
             DYKLogger.log(f"DYK update run triggered by {next(activator.revisions()).user}.")
-            #self.reset_activator()
+            self.reset_activator()
             queue = self.get_next_queue()
             hooks = self.get_hooks(queue)
             self.clear_queue(queue)
@@ -90,7 +90,7 @@ class Bot():
             self.archive_dyk()
             self.update_dyk(hooks)
             self.update_timer()
-            #self.add_tp_banner(hooks)
+            self.add_tp_banner(hooks)
             DYKLogger.log(f"DYK update finished.")
         except Exception as e:
             DYKLogger.log(f"{type(e).__name__}: {e}")
