@@ -39,7 +39,7 @@ class Bot():
     def update_next_queue(self):
         nexq = pwb.Page(self.SITE, self.NEXQ_LOC)
         nexq_number = 1 + (self.CUR_QUEUE % self.NUM_QUEUES)
-        nexq.text = re.sub(r"%d+", str(nexq_number), nexq.text)
+        nexq.text = re.sub(r"\d+", str(nexq_number), nexq.text)
         nexq.save("[BOT] Incrementing next queue number")
 
     def get_hooks(self, queue):
