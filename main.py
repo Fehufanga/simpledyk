@@ -6,6 +6,8 @@ from datetime import datetime
 import mwparserfromhell as mwp
 import pywikibot as pwb
 
+from dyk_logger import DYKLogger
+
 class Bot():
     SITE = pwb.Site()
     ACTIVATOR_LOC = f"User:{SITE.username()}/DYKRun"
@@ -38,6 +40,7 @@ class Bot():
         nexq = pwb.Page(self.SITE, self.NEXQ_LOC)
         nexq_number = 1 + (self.CUR_QUEUE % self.NUM_QUEUES)
         nexq.text = re.sub(r"%d+", str(nexq_number), nexq.text)
+        nexq.save("[BOT] Incrementing next queue number")
 
     def get_hooks(self, queue):
         return re.search(r"== ?Hooks ?==((.|\n)*?)<!--\nSTOP", queue.text)[1]
@@ -74,22 +77,24 @@ class Bot():
             talk_page.save("[BOT] Adding {{dyktalk}} to DYK-featured article")
 
     def run(self):
-        if not self.check_activator():
-            return
-        #self.reset_activator()
-        queue = None
         try:
+            if not self.check_activator():
+                return
+            activator = pwb.Page(self.SITE, self.ACTIVATOR_LOC)
+            DYKLogger.log(f"DYK update run triggered by {next(activator.revisions()).user}.")
+            #self.reset_activator()
             queue = self.get_next_queue()
-        except ValueError:
+            hooks = self.get_hooks(queue)
+            self.clear_queue(queue)
+            self.update_next_queue()
+            self.archive_dyk()
+            self.update_dyk(hooks)
+            self.update_timer()
+            #self.add_tp_banner(hooks)
+            DYKLogger.log(f"DYK update finished.")
+        except Exception as e:
+            DYKLogger.log(f"{type(e).__name__}: {e}")
             sys.exit(1)
-        hooks = self.get_hooks(queue)
-        self.clear_queue(queue)
-        self.update_next_queue()
-        self.archive_dyk()
-        self.update_dyk(hooks)
-        self.update_timer()
-        self.add_tp_banner(hooks)
-        
 def main():
     bot = Bot()
     bot.run()
