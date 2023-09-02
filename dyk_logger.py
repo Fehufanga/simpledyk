@@ -11,3 +11,6 @@ class DYKLogger():
         log = pwb.Page(self.SITE, self.LOG_LOC)
         log.text = log.text + "\n*'''{now:%c}''': {message}".format(now=datetime.now(), message=message)
         log.save("[BOT] Logging bot run")
+
+    def notify(self, message):
+        MAINTAINER_LOC = f"User talk:Fehufanga"

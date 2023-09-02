@@ -1,6 +1,6 @@
 import re
 import sys
-import traecback
+import traceback
 
 from datetime import datetime
 
